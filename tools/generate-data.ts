@@ -1,5 +1,5 @@
 import faker from "faker";
-import type { Product, Section } from "../src/types";
+import type { Product, Section } from "../src/common/types";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 
