@@ -27,6 +27,7 @@ const generateData = (count: number) => {
     sections.push({
       id: i + SECTION_ID_OFFSET,
       name: faker.commerce.department(),
+      sortOrder: i,
     });
   }
 
