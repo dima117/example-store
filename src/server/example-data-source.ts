@@ -3,7 +3,6 @@ import type {
   CheckoutRequest,
   Product,
   ProductShortInfo,
-  Section,
 } from "../common/types";
 import type { Order, OrderItem } from "./types";
 import { ApiError } from "./utils";
@@ -12,7 +11,6 @@ import { ApiError } from "./utils";
  * Класс для работы с данными приложения (разделы, товары, заказы)
  */
 export class ExampleDataSource {
-  private sections: Section[] = [];
   private products: Product[] = [];
   private orders: Order[] = [];
   private nextOrderId: number = 1;
@@ -20,7 +18,6 @@ export class ExampleDataSource {
   constructor(dataFilePath: string) {
     try {
       const data = JSON.parse(readFileSync(dataFilePath, "utf-8"));
-      this.sections = data.sections;
       this.products = data.products;
     } catch (_error) {
       throw new Error(`Ошибка при загрузке данных из файла ${dataFilePath}:`);
@@ -28,19 +25,10 @@ export class ExampleDataSource {
   }
 
   /**
-   * Возвращает список всех разделов
-   */
-  getSections(): Section[] {
-    return [...this.sections].sort((a, b) => a.sortOrder - b.sortOrder);
-  }
-
-  /**
    * Возвращает список товаров для указанного раздела
    */
-  getProductsBySection(sectionId: number): ProductShortInfo[] {
-    return this.products
-      .filter((product) => product.section === sectionId)
-      .map(({ id, name, price, section }) => ({ id, name, price, section }));
+  getProducts(): ProductShortInfo[] {
+    return this.products.map(({ id, name, price }) => ({ id, name, price }));
   }
 
   /**
@@ -48,15 +36,6 @@ export class ExampleDataSource {
    */
   getProductById(productId: number): Product | undefined {
     return this.products.find((product) => product.id === productId);
-  }
-
-  /**
-   * Возвращает список промо-товаров для отображения на главной странице
-   */
-  getPromoProducts(count: number = 5): ProductShortInfo[] {
-    return this.products
-      .slice(0, count)
-      .map(({ id, name, price, section }) => ({ id, name, price, section }));
   }
 
   /**

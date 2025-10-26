@@ -10,20 +10,9 @@ import { ApiError, errorHandlerMiddleware } from "./utils";
 export function createApiRouter(dataSource: ExampleDataSource) {
   const apiRouter = express.Router();
 
-  apiRouter.get("/sections", (_req, res) => {
-    const sections = dataSource.getSections();
-    res.json(sections);
-  });
-
-  apiRouter.get("/sections/:id/products", (req, res) => {
-    const sectionId = Number(req.params.id);
-    const products = dataSource.getProductsBySection(sectionId);
+  apiRouter.get("/products", (_req, res) => {
+    const products = dataSource.getProducts();
     res.json(products);
-  });
-
-  apiRouter.get("/products/promo", (_req, res) => {
-    const promoProducts = dataSource.getPromoProducts();
-    res.json(promoProducts);
   });
 
   apiRouter.get("/products/:productId", (req, res) => {
