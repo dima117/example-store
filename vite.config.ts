@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
+      "@": "/src/client",
       "@common": "/src/common",
       "@components": "/src/client/components",
     },

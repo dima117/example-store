@@ -1,6 +1,21 @@
 import type { FC, PropsWithChildren } from "react";
 import { NavLink } from "react-router";
 
+interface HeaderLinkProps {
+  text: string;
+  to: string;
+}
+
+const HeaderLink: FC<HeaderLinkProps> = ({ to, text }) => {
+  return (
+    <li className="nav-item">
+      <NavLink className="nav-link" to={to} end>
+        {text}
+      </NavLink>
+    </li>
+  );
+};
+
 export const Layout: FC<PropsWithChildren> = ({ children }) => {
   return (
     <>
@@ -11,26 +26,13 @@ export const Layout: FC<PropsWithChildren> = ({ children }) => {
           </NavLink>
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
-              <li className="nav-item">
-                <NavLink className="nav-link" to="/catalog" end>
-                  Catalog
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink className="nav-link" to="/about" end>
-                  About
-                </NavLink>
-              </li>
+              <HeaderLink to="/catalog" text="Catalog" />
+              <HeaderLink to="/about" text="About" />
             </ul>
           </div>
         </div>
       </nav>
-      <div className="container">
-        <div className="row">
-          <div className="col"></div>
-        </div>
-        {children}
-      </div>
+      <div className="container">{children}</div>
     </>
   );
 };

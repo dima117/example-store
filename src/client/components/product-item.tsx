@@ -16,7 +16,16 @@ export const ProductItem: FC<ProductItemProps> = ({ product }) => {
         <h5 className="card-title">
           <Link to={`/catalog/${product.id}`}>{product.name}</Link>
         </h5>
-        <p className="card-text">${product.price}</p>
+        <div className="row">
+          <div className="col">
+            <span className="fs-3">${product.price}</span>
+          </div>
+          <div className="col-auto">
+            <button type="button" className="btn btn-outline-primary">
+              Add to Cart
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

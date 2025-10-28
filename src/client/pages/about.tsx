@@ -1,13 +1,14 @@
 import type { FC } from "react";
 import { Image } from "@components/image";
+import { PageTitle } from "@/components/page-title";
 
 export const About: FC = () => {
   return (
     <>
       <title>About — Example Store</title>
+      <PageTitle>About us</PageTitle>
       <div className="row">
         <div className="col">
-          <h1>About us</h1>
           <p>
             Ut non consequatur aperiam ex dolores. Voluptatum harum consequatur
             est totam. Aut voluptatum aliquid aut optio et ea. Quaerat et

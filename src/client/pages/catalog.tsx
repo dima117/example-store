@@ -3,14 +3,15 @@ import type { FC } from "react";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
-import type { Product } from "@common/types";
+import type { ProductShortInfo } from "@common/types";
 import { ProductItem } from "@components/product-item";
+import { PageTitle } from "@/components/page-title";
 
 export const Catalog: FC = () => {
-  const { data, isLoading, error } = useQuery<Product[]>({
-    queryKey: [],
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["products"],
     queryFn: async () => {
-      return (await axios.get<Product[]>("/api/products")).data;
+      return (await axios.get<ProductShortInfo[]>("/api/products")).data;
     },
   });
 
@@ -31,11 +32,7 @@ export const Catalog: FC = () => {
   return (
     <>
       <title>Catalog — Example Store</title>
-      <div className="row">
-        <div className="col">
-          <h1>Catalog</h1>
-        </div>
-      </div>
+      <PageTitle>Catalog</PageTitle>
       <div className="row">{content}</div>
     </>
   );

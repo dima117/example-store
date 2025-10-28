@@ -1,0 +1,9 @@
+.image {
+    width: 100%;
+    min-height: 140px;
+    display: inline-flex;
+    color: #999;
+    background-color: #e8e8e8;
+    align-items: center;
+    justify-content: center;
+}

@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router";
 import { Layout } from "./layout";
 import { Home } from "./pages/home";
 import { Catalog } from "./pages/catalog";
+import { Product } from "./pages/product";
 import { About } from "./pages/about";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -17,6 +18,7 @@ export const Application: FC = () => {
         <Routes>
           <Route index element={<Home />} />
           <Route path="catalog" element={<Catalog />} />
+          <Route path="catalog/:id" element={<Product />} />
           <Route path="about" element={<About />} />
         </Routes>
       </Layout>
