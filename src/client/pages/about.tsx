@@ -1,11 +1,12 @@
 import type { FC } from "react";
 import { Image } from "@components/image";
 import { PageTitle } from "@/components/page-title";
+import { DocumentTitle } from "@/components/document-title";
 
 export const About: FC = () => {
   return (
     <>
-      <title>About — Example Store</title>
+      <DocumentTitle text="About" />
       <PageTitle>About us</PageTitle>
       <div className="row">
         <div className="col">

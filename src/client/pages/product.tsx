@@ -6,28 +6,25 @@ import type { Product as ProductInfo } from "@common/types";
 import axios from "axios";
 import { ProductDetails } from "@components/product-details";
 import { PageTitle } from "@/components/page-title";
+import { DocumentTitle } from "@/components/document-title";
 
 export const Product: FC = () => {
   let { id } = useParams();
 
-  const { data, isLoading, error } = useQuery({
+  const { data } = useQuery({
     queryKey: ["details", id],
     queryFn: async () => {
       return (await axios.get<ProductInfo>(`/api/products/${id}`)).data;
     },
   });
 
-  if (isLoading || !data) {
+  if (!data) {
     return "Loading...";
-  }
-
-  if (error) {
-    return error.message;
   }
 
   return (
     <>
-      <title>{data.name} — Example Store</title>
+      <DocumentTitle text={data.name} />
       <PageTitle>{data.name}</PageTitle>
       <ProductDetails product={data} />
     </>

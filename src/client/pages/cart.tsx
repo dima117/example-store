@@ -5,6 +5,7 @@ import { clearCart, checkout, useAppDispatch, useAppSelector } from "@/store";
 import { formatDate } from "@/utils";
 import { Link } from "react-router";
 import type { CheckoutFormData } from "@/types";
+import { DocumentTitle } from "@/components/document-title";
 
 export const Cart: FC = () => {
   const dispatch = useAppDispatch();
@@ -104,7 +105,7 @@ export const Cart: FC = () => {
 
   return (
     <>
-      <title>Shopping cart — Example Store</title>
+      <DocumentTitle text="Shopping cart" />
       <div className="row">
         <div className="col-6">
           <PageTitle>Shopping cart</PageTitle>

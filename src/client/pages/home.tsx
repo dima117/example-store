@@ -1,9 +1,10 @@
 import type { FC } from "react";
+import { DocumentTitle } from "@/components/document-title";
 
 export const Home: FC = () => {
   return (
     <>
-      <title>Home — Example Store</title>
+      <DocumentTitle text="Home" />
       <div className="row">
         <div className="col bg-secondary text-white py-4 bg-opacity-75">
           <p className="display-3">Welcome to Example store!</p>

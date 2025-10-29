@@ -6,21 +6,18 @@ import { useQuery } from "@tanstack/react-query";
 import type { ProductShortInfo } from "@common/types";
 import { ProductItem } from "@components/product-item";
 import { PageTitle } from "@/components/page-title";
+import { DocumentTitle } from "@/components/document-title";
 
 export const Catalog: FC = () => {
-  const { data, isLoading, error } = useQuery({
+  const { data } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
       return (await axios.get<ProductShortInfo[]>("/api/products")).data;
     },
   });
 
-  if (isLoading || !data) {
+  if (!data) {
     return "Loading...";
-  }
-
-  if (error) {
-    return error.message;
   }
 
   const content = data.map((p) => (
@@ -31,7 +28,7 @@ export const Catalog: FC = () => {
 
   return (
     <>
-      <title>Catalog — Example Store</title>
+      <DocumentTitle text="Catalog" />
       <PageTitle>Catalog</PageTitle>
       <div className="row">{content}</div>
     </>

@@ -11,18 +11,18 @@ import axios from "axios";
 
 const emptyCart: CartState = {};
 
-interface StoreState {
+interface State {
   cart: CartState;
   lastOrder: LastOrder | null;
 }
 
-const initialState: StoreState = {
+const initialState: State = {
   cart: emptyCart,
   lastOrder: null
 };
 
-const storeSlice = createSlice({
-  name: "store",
+const slice = createSlice({
+  name: "example",
   initialState,
   reducers: {
     addToCart: (state, action: PayloadAction<ProductShortInfo>) => {
@@ -49,7 +49,7 @@ const storeSlice = createSlice({
 
 export const initStore = () => {
   const store = configureStore({
-    reducer: storeSlice.reducer,
+    reducer: slice.reducer,
     devTools: true,
   });
 
@@ -65,7 +65,7 @@ export const checkout = createAsyncThunk<
   CheckoutResponse,
   CheckoutActionPayload
 >(
-  "cart/checkout",
+  "example/checkout",
   async ({ form, cart }: CheckoutActionPayload) => {
     const items = Object.entries(cart).map(([id, item]) => ({
       id: Number(id),
@@ -86,7 +86,7 @@ export const checkout = createAsyncThunk<
   }
 );
 
-export const { addToCart, clearCart } = storeSlice.actions;
+export const { addToCart, clearCart } = slice.actions;
 
 export type Store = ReturnType<typeof initStore>;
 
