@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 
@@ -10,5 +11,8 @@ export default defineConfig({
       "@common": "/src/common",
       "@components": "/src/client/components",
     },
+  },
+  test: {
+    environment: "jsdom",
   },
 });

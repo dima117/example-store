@@ -62,6 +62,9 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit }) => {
     setSubmitted,
     setSent,
     onSubmit,
+    name,
+    phone,
+    address,
   ]);
 
   return (
@@ -77,6 +80,7 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit }) => {
           className={getControlClass(nameIsValid, submitted)}
           autoComplete="off"
           onChange={onChangeName}
+          value={name}
         />
         <div className="invalid-feedback">Please provide your name</div>
       </div>
@@ -90,6 +94,7 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit }) => {
           disabled={sent}
           className={getControlClass(phoneIsValid, submitted)}
           onChange={onChangePhone}
+          value={phone}
         />
         <div className="invalid-feedback">Please provide a valid phone</div>
       </div>
@@ -103,6 +108,7 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit }) => {
           rows={3}
           className={getControlClass(addressIsValid, submitted)}
           onChange={onChangeAddress}
+          value={address}
         ></textarea>
         <div className="invalid-feedback">Please provide a valid address</div>
       </div>

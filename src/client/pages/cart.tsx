@@ -111,7 +111,7 @@ export const Cart: FC = () => {
         <div className="col-6">
           <PageTitle>Shopping cart</PageTitle>
           {lastOrderInfo}
-          {content}
+          <div data-testid="content">{content}</div>
         </div>
       </div>
       {actions}

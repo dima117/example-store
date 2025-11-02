@@ -8,8 +8,6 @@ import { Cart } from "./pages/cart";
 import { Contacts } from "./pages/contacts";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import "bootstrap/dist/css/bootstrap.min.css";
-
 const client = new QueryClient();
 
 /** основной компонент приложения */

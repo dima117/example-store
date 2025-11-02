@@ -6,6 +6,8 @@ import { Application } from "./client/application";
 import { BrowserRouter } from "react-router";
 import { initStore } from "@/store";
 
+import "bootstrap/dist/css/bootstrap.min.css";
+
 const root = document.getElementById("root");
 
 if (!root) {

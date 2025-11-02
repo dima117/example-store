@@ -1,22 +1,25 @@
-import {
-  configureStore,
-  createSlice,
-  createAsyncThunk,
-  type PayloadAction,
-} from "@reduxjs/toolkit";
+import { configureStore, createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit";
 import type { CartState, CheckoutFormData, LastOrder } from "@/types";
-import type {
-  ProductShortInfo,
-  CheckoutRequest,
-  CheckoutResponse,
-} from "@common/types";
+import type { ProductShortInfo, CheckoutRequest, CheckoutResponse } from "@common/types";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import {
-  EMPTY_CART,
-  getCartFromLocalStorage,
-  saveCartToLocalStorage,
-} from "./utils";
+import { EMPTY_CART, getCartFromLocalStorage, saveCartToLocalStorage } from "./utils";
+
+// store typings
+export type Store = ReturnType<typeof initStore>;
+export type RootState = ReturnType<Store["getState"]>;
+export type AppDispatch = Store["dispatch"];
+
+/** типизированный useDispatch */
+export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
+
+/** типизированный useSelector */
+export const useAppSelector = useSelector.withTypes<RootState>();
+
+/** типизированный createAsyncThunk */
+const createAppThunk = createAsyncThunk.withTypes<{
+  state: RootState;
+}>();
 
 // state
 interface State {
@@ -77,30 +80,27 @@ interface CheckoutActionPayload {
 }
 
 /** redux action: оформление заказа  */
-export const checkout = createAsyncThunk<
-  CheckoutResponse,
-  CheckoutActionPayload
->("example/checkout", async ({ form, cart }: CheckoutActionPayload) => {
-  const items = Object.entries(cart).map(([id, item]) => ({
-    id: Number(id),
-    count: item.count,
-  }));
+export const checkout = createAppThunk<CheckoutResponse, CheckoutActionPayload>(
+  "example/checkout",
+  async ({ form, cart }: CheckoutActionPayload) => {
+    const items = Object.entries(cart).map(([id, item]) => ({
+      id: Number(id),
+      count: item.count,
+    }));
 
-  const checkoutData: CheckoutRequest = {
-    items,
-    customer: {
-      name: form.name,
-      phone: form.phone,
-      address: form.address,
-    },
-  };
+    const checkoutData: CheckoutRequest = {
+      items,
+      customer: {
+        name: form.name,
+        phone: form.phone,
+        address: form.address,
+      },
+    };
 
-  const response = await axios.post<CheckoutResponse>(
-    "/api/checkout",
-    checkoutData
-  );
-  return response.data;
-});
+    const response = await axios.post<CheckoutResponse>("/api/checkout", checkoutData);
+    return response.data;
+  }
+);
 
 /** создать экземпляр redux store */
 export const initStore = () => {
@@ -115,14 +115,3 @@ export const initStore = () => {
 
   return store;
 };
-
-// store typings
-type Store = ReturnType<typeof initStore>;
-type RootState = ReturnType<Store["getState"]>;
-type AppDispatch = Store["dispatch"];
-
-/** типизированный useDispatch */
-export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
-
-/** типизированный useSelector */
-export const useAppSelector = useSelector.withTypes<RootState>();
