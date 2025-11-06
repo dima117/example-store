@@ -12,7 +12,7 @@ import { ApiError } from "./utils";
  */
 export class ExampleDataSource {
   private products: Product[] = [];
-  private orders: Order[] = [];
+  // private orders: Order[] = [];
   private nextOrderId: number = 1;
 
   constructor(dataFilePath: string) {
@@ -76,7 +76,7 @@ export class ExampleDataSource {
       createdAt: new Date().toISOString(),
     };
 
-    this.orders.push(newOrder);
+    // this.orders.push(newOrder);
 
     return newOrder;
   }

@@ -9,7 +9,7 @@ import { createServer } from "vite";
 export const createViteServer = async (templateFilePath: string) => {
   const { transformIndexHtml, ssrLoadModule, ssrFixStacktrace, middlewares } =
     await createServer({
-      server: { middlewareMode: true, hmr: true },
+      server: { middlewareMode: true, hmr: true, allowedHosts: true },
       appType: "custom",
     });
 

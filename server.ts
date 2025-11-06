@@ -4,6 +4,8 @@ import { createServer } from "./src/server/create-server";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+const port: number = Number(process.env.EXAMPLE_PORT) || 5173;
+
 async function startServer(port: number) {
   const app = await createServer({
     templateFilePath: resolve(__dirname, "index.html"),
@@ -14,4 +16,4 @@ async function startServer(port: number) {
   console.log(`http://localhost:${port}`);
 }
 
-void startServer(5173);
+void startServer(port);
