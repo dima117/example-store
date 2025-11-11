@@ -55,17 +55,7 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit }) => {
         address: address.trim(),
       });
     }
-  }, [
-    nameIsValid,
-    phoneIsValid,
-    addressIsValid,
-    setSubmitted,
-    setSent,
-    onSubmit,
-    name,
-    phone,
-    address,
-  ]);
+  }, [nameIsValid, phoneIsValid, addressIsValid, setSubmitted, setSent, onSubmit, name, phone, address]);
 
   return (
     <div>
@@ -81,6 +71,7 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit }) => {
           autoComplete="off"
           onChange={onChangeName}
           value={name}
+          data-testid="input-name"
         />
         <div className="invalid-feedback">Please provide your name</div>
       </div>
@@ -95,6 +86,7 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit }) => {
           className={getControlClass(phoneIsValid, submitted)}
           onChange={onChangePhone}
           value={phone}
+          data-testid="input-phone"
         />
         <div className="invalid-feedback">Please provide a valid phone</div>
       </div>
@@ -109,11 +101,12 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit }) => {
           className={getControlClass(addressIsValid, submitted)}
           onChange={onChangeAddress}
           value={address}
+          data-testid="input-address"
         ></textarea>
         <div className="invalid-feedback">Please provide a valid address</div>
       </div>
 
-      <button className="btn btn-primary" disabled={sent} onClick={onClick}>
+      <button className="btn btn-primary" disabled={sent} onClick={onClick} data-testid="button-submit">
         Checkout
       </button>
     </div>

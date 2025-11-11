@@ -28,7 +28,7 @@ export const Cart: FC = () => {
   let lastOrderInfo: React.ReactNode = null;
 
   const cartIsEmpty = !Object.values(cart).some((i) => i.count > 0);
-  
+
   if (cartIsEmpty && lastOrder) {
     const orderDate = formatDate(new Date(lastOrder.createdAt));
     lastOrderInfo = (
@@ -43,18 +43,15 @@ export const Cart: FC = () => {
       return (
         <tr key={id} data-testid={id}>
           <th scope="row">{index + 1}</th>
-          <td>{item.name}</td>
-          <td>${item.price}</td>
-          <td>{item.count}</td>
-          <td>${item.count * item.price}</td>
+          <td data-testid="cart-item-name">{item.name}</td>
+          <td data-testid="cart-item-price">${item.price}</td>
+          <td data-testid="cart-item-count">{item.count}</td>
+          <td data-testid="cart-item-total">${item.count * item.price}</td>
         </tr>
       );
     });
 
-    const total = Object.values(cart).reduce(
-      (sum, { count, price }) => sum + count * price,
-      0
-    );
+    const total = Object.values(cart).reduce((sum, { count, price }) => sum + count * price, 0);
 
     content = (
       <table className="table table-bordered">
@@ -80,7 +77,10 @@ export const Cart: FC = () => {
     content = (
       <>
         Cart is empty. Please select products in the{" "}
-        <Link to="/catalog">catalog</Link>.
+        <Link data-testid="link-catalog" to="/catalog">
+          catalog
+        </Link>
+        .
       </>
     );
   }
