@@ -111,7 +111,7 @@ test('в каталоге должны отображаться товары, с
     expect(names).toEqual(['Item 1', 'Item 2', 'Item 3']);
 });
 
-test.only('название является ссылкой на страницу c подробной информацией о товаре', async () => {
+test('название является ссылкой на страницу c подробной информацией о товаре', async () => {
     const deps = createStubDeps();
     deps.api.getProductList = vi.fn()
         .mockResolvedValueOnce([{ id: 1, name: 'Item 1', price: 111, description: 'Test product description 3' }]);
@@ -126,7 +126,7 @@ test.only('название является ссылкой на страниц�
             color: 'Orange',
         });
 
-    const { getByTestId } = renderComponent(<Application />, deps, '/catalog');
+    const { getByTestId, history } = renderComponent(<Application />, deps, '/catalog');
 
     await waitForElementToBeRemoved(getByTestId('loading'));
     
@@ -135,6 +135,10 @@ test.only('название является ссылкой на страниц�
     
     await event.click(itemName);
 
+    // console.log(window.location.pathname)
+
     expect(getByTestId('page-title').textContent).toBe('Item 1');
+    expect(history.location.pathname).toBe('/catalog/1');
+    
     debug();
 });
