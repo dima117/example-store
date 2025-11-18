@@ -6,6 +6,7 @@ import event from '@testing-library/user-event';
 import { Cart } from '@/pages/cart';
 import { createStubDeps, renderComponent } from './utils';
 import { Catalog } from '@/pages/catalog';
+import { Application } from '@/application';
 
 beforeEach(() => {
     document.body.innerHTML = '';
@@ -91,7 +92,7 @@ test('при нажатии кнопки "Заказать" содержимое
     });
 });
 
-test.only('в каталоге должны отображаться товары, список которых приходит с сервера', async () => {
+test('в каталоге должны отображаться товары, список которых приходит с сервера', async () => {
     const deps = createStubDeps();
 
     deps.api.getProductList = vi.fn().mockResolvedValueOnce([
@@ -104,10 +105,36 @@ test.only('в каталоге должны отображаться товар�
 
     await waitForElementToBeRemoved(getByTestId('loading'));
 
-    debug();
-    
     const items = getAllByTestId('product-list-item');
     const names = items.map((item) => within(item).getByTestId('name').textContent);
 
     expect(names).toEqual(['Item 1', 'Item 2', 'Item 3']);
+});
+
+test.only('название является ссылкой на страницу c подробной информацией о товаре', async () => {
+    const deps = createStubDeps();
+    deps.api.getProductList = vi.fn()
+        .mockResolvedValueOnce([{ id: 1, name: 'Item 1', price: 111, description: 'Test product description 3' }]);
+    deps.api.getProductDetails = vi.fn()
+        .mockResolvedValueOnce({ 
+            id: 1,
+            name: 'Item 1',
+            price: 111,
+            description: 'Test product description 1',
+            fullDescription: 'Test product full description 1',
+            material: 'Wood',
+            color: 'Orange',
+        });
+
+    const { getByTestId } = renderComponent(<Application />, deps, '/catalog');
+
+    await waitForElementToBeRemoved(getByTestId('loading'));
+    
+    const item = getByTestId('product-list-item');
+    const itemName = within(item).getByTestId('name');
+    
+    await event.click(itemName);
+
+    expect(getByTestId('page-title').textContent).toBe('Item 1');
+    debug();
 });

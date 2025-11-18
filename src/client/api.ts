@@ -1,4 +1,4 @@
-import type { CheckoutRequest, CheckoutResponse, ProductShortInfo } from '@common/types';
+import type { CheckoutRequest, CheckoutResponse, Product, ProductShortInfo } from '@common/types';
 import type { CartState } from './types';
 import axios from 'axios';
 import { createContext, useContext } from 'react';
@@ -37,6 +37,7 @@ export class CartApi implements ICartApi {
 export interface IServerApi {
     checkout(params: CheckoutRequest): Promise<CheckoutResponse>;
     getProductList(): Promise<ProductShortInfo[]>;
+    getProductDetails(id: unknown): Promise<Product>;
 }
 
 export class ServerApi implements IServerApi {
@@ -47,6 +48,12 @@ export class ServerApi implements IServerApi {
     async getProductList() {
         const response = await axios.get<ProductShortInfo[]>('/api/products');
 
+        return response.data;
+    }
+
+    async getProductDetails(id: unknown) {
+        const response = await axios.get<Product>(`/api/products/${id}`);
+    
         return response.data;
     }
 }

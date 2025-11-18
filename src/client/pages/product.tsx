@@ -2,21 +2,19 @@ import { useQuery } from '@tanstack/react-query';
 import type { FC } from 'react';
 import { useParams } from 'react-router';
 
-import type { Product as ProductInfo } from '@common/types';
-import axios from 'axios';
 import { ProductDetails } from '@components/product-details';
 import { PageTitle } from '@/components/page-title';
 import { DocumentTitle } from '@/components/document-title';
+import { useApi } from '@/api';
 
 /** страница отдельного товара */
 export const Product: FC = () => {
     let { id } = useParams();
+    const api = useApi();
 
     const { data } = useQuery({
         queryKey: ['details', id],
-        queryFn: async () => {
-            return (await axios.get<ProductInfo>(`/api/products/${id}`)).data;
-        },
+        queryFn: async () => api.getProductDetails(id),
     });
 
     if (!data) {
