@@ -6,7 +6,7 @@ import { Application } from './client/application';
 import { BrowserRouter } from 'react-router';
 import { initStore, type Deps } from '@/store';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { CartApi } from '@/api';
+import { CartApi, ServerApi } from '@/api';
 
 const root = document.getElementById('root');
 
@@ -16,6 +16,7 @@ if (!root) {
 
 const deps: Deps = {
     cart: new CartApi(),
+    api: new ServerApi(),
 };
 
 // при создании стора передаем в него зависимости

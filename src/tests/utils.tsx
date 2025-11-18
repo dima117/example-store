@@ -12,6 +12,9 @@ export const createStubDeps = (state: CartState = {}): Deps => {
             getCartFromLocalStorage: vi.fn().mockReturnValue(state),
             saveCartToLocalStorage: vi.fn(),
         },
+        api: {
+            checkout: vi.fn(),
+        }
     };
 };
 

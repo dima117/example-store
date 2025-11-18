@@ -1,4 +1,6 @@
+import type { CheckoutRequest, CheckoutResponse } from '@common/types';
 import type { CartState } from './types';
+import axios from 'axios';
 
 /** ключ, в котором хранится состояние корзины в localStorage */
 export const LOCAL_STORAGE_CART_KEY = 'example-store-cart';
@@ -28,5 +30,16 @@ export class CartApi implements ICartApi {
         } catch {
             return EMPTY_CART;
         }
+    }
+}
+
+export interface IServerApi {
+    checkout(params: CheckoutRequest): Promise<CheckoutResponse>;
+}
+
+export class ServerApi implements IServerApi {
+    async checkout(params: CheckoutRequest) {
+        const response = await axios.post<CheckoutResponse>('/api/checkout', params);
+        return response.data;
     }
 }

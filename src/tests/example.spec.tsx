@@ -59,8 +59,35 @@ test('если корзина пуста, должна отображаться 
 
     const { getByTestId } = renderComponent(<Cart />, deps);
 
-    debug();
-
     expect(getByTestId('content').textContent).toBe('Cart is empty. Please select products in the catalog.');
     expect((getByTestId('link-catalog') as HTMLAnchorElement).href).toBe('http://localhost:3000/catalog');
+});
+
+test.only('при нажатии кнопки "Заказать" содержимое корзины и значения полей формы заказа отправляются на сервер и оформляется новый заказ', async () => {
+    const deps = createStubDeps({
+        11: { name: 'тест11', count: 10, price: 230 },
+        22: { name: 'тест22', count: 20, price: 1000 },
+    });
+
+    const { getByTestId } = renderComponent(<Cart />, deps);
+
+    await event.type(getByTestId('input-name'), 'Иван Иванов');
+    await event.type(getByTestId('input-phone'), '+79991234567');
+    await event.type(getByTestId('input-address'), 'Казань');
+
+    debug();
+
+    await event.click(getByTestId('button-submit'));
+
+    expect(deps.api.checkout).toBeCalledWith({
+        customer: {
+            address: 'Казань',
+            name: 'Иван Иванов',
+            phone: '+79991234567',
+        },
+        items: [
+            { id: 11, count: 10 },
+            { id: 22, count: 20 },
+        ],
+    });
 });

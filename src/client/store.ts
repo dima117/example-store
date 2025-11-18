@@ -7,13 +7,13 @@ import {
     isAnyOf,
 } from '@reduxjs/toolkit';
 import type { CartState, CheckoutFormData, LastOrder } from '@/types';
-import type { ProductShortInfo, CheckoutRequest, CheckoutResponse } from '@common/types';
+import type { ProductShortInfo, CheckoutResponse } from '@common/types';
 import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
-import { EMPTY_CART, type ICartApi } from './api';
+import { EMPTY_CART, type ICartApi, type IServerApi } from './api';
 
 export interface Deps {
     cart: ICartApi;
+    api: IServerApi;
 }
 
 // store typings
@@ -85,23 +85,20 @@ interface CheckoutActionPayload {
 /** redux action: оформление заказа  */
 export const checkout = createAppThunk<CheckoutResponse, CheckoutActionPayload>(
     'example/checkout',
-    async ({ form, cart }: CheckoutActionPayload) => {
+    async ({ form, cart }: CheckoutActionPayload, { extra: { api } }) => {
         const items = Object.entries(cart).map(([id, item]) => ({
             id: Number(id),
             count: item.count,
         }));
 
-        const checkoutData: CheckoutRequest = {
+        return await api.checkout({
             items,
             customer: {
                 name: form.name,
                 phone: form.phone,
                 address: form.address,
             },
-        };
-
-        const response = await axios.post<CheckoutResponse>('/api/checkout', checkoutData);
-        return response.data;
+        });
     }
 );
 
