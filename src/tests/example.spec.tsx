@@ -1,8 +1,20 @@
 import { expect, test } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import { CheckoutForm } from '@/components/checkout-form';
+import { debug } from 'vitest-preview';
+import event from '@testing-library/user-event';
 
-test('adds 1 + 2 to equal 3', () => {
-    const { container } = render(<div>1234</div>);
+test('для оформления заказа нужно ввести ФИО, телефон, адрес, все поля обазательны для заполнения', async () => {
+    const { container, getByTestId } = render(<CheckoutForm onSubmit={() => {}} />);
 
-    expect(container.innerHTML).toBe('<div>1234</div>');
+    // console.log(container.outerHTML);
+    screen.logTestingPlaygroundURL(container);
+
+    await event.click(getByTestId('button-submit'));
+
+    expect(getByTestId('input-name').classList).toContain('is-invalid');
+    expect(getByTestId('input-phone').classList).toContain('is-invalid');
+    expect(getByTestId('input-address').classList).toContain('is-invalid');
+
+    debug();
 });
