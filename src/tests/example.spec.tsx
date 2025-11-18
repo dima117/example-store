@@ -126,7 +126,7 @@ test.only('название является ссылкой на страниц�
             color: 'Orange',
         });
 
-    const { getByTestId } = renderComponent(<Application />, deps, '/catalog');
+    const { getByTestId, history } = renderComponent(<Application />, deps, '/catalog');
 
     await waitForElementToBeRemoved(getByTestId('loading'));
     
@@ -135,6 +135,10 @@ test.only('название является ссылкой на страниц�
     
     await event.click(itemName);
 
+    // console.log(window.location.pathname)
+
     expect(getByTestId('page-title').textContent).toBe('Item 1');
+    expect(history.location.pathname).toBe('/catalog/1');
+    
     debug();
 });
