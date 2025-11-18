@@ -1,9 +1,20 @@
-import { configureStore, createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
+import {
+    configureStore,
+    createSlice,
+    createAsyncThunk,
+    type PayloadAction,
+    createListenerMiddleware,
+    isAnyOf,
+} from '@reduxjs/toolkit';
 import type { CartState, CheckoutFormData, LastOrder } from '@/types';
 import type { ProductShortInfo, CheckoutRequest, CheckoutResponse } from '@common/types';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { EMPTY_CART, getCartFromLocalStorage, saveCartToLocalStorage } from './utils';
+import { EMPTY_CART, type ICartApi } from './api';
+
+export interface Deps {
+    cart: ICartApi;
+}
 
 // store typings
 export type Store = ReturnType<typeof initStore>;
@@ -19,6 +30,7 @@ export const useAppSelector = useSelector.withTypes<RootState>();
 /** типизированный createAsyncThunk */
 const createAppThunk = createAsyncThunk.withTypes<{
     state: RootState;
+    extra: Deps;
 }>();
 
 // state
@@ -46,24 +58,15 @@ const slice = createSlice({
 
             state.cart[id].count++;
             state.lastOrder = null;
-
-            // Сохраняем корзину в localStorage
-            saveCartToLocalStorage(state.cart);
         },
         clearCart: (state) => {
             state.cart = EMPTY_CART;
-
-            // Сохраняем пустую корзину в localStorage
-            saveCartToLocalStorage(EMPTY_CART);
         },
     },
     extraReducers: (builder) => {
         builder.addCase(checkout.fulfilled, (state, action) => {
             state.cart = {};
             state.lastOrder = action.payload;
-
-            // Сохраняем пустую корзину в localStorage после успешного оформления заказа
-            saveCartToLocalStorage(EMPTY_CART);
         });
     },
 });
@@ -102,14 +105,40 @@ export const checkout = createAppThunk<CheckoutResponse, CheckoutActionPayload>(
     }
 );
 
+// этот thunk выполняет сохранение состояния корзины в localStorage
+export const saveCart = createAppThunk('example/save-cart', async (_, { getState, extra }) => {
+    const cartState = getState().cart;
+    extra.cart.saveCartToLocalStorage(cartState);
+});
+
+// подключаем listenerMiddleware, чтобы автоматически
+// вызывать saveCart при изменении состояния корзины
+const listenerMiddleware = createListenerMiddleware();
+
+listenerMiddleware.startListening.withTypes<RootState, AppDispatch, Deps>()({
+    matcher: isAnyOf(addToCart, clearCart, checkout.fulfilled),
+    effect: (_, { dispatch }) => {
+        dispatch(saveCart());
+    },
+});
+
 /** создать экземпляр redux store */
-export const initStore = () => {
+export const initStore = (deps: Deps) => {
     const store = configureStore({
         reducer: slice.reducer,
         preloadedState: {
-            cart: getCartFromLocalStorage(),
+            cart: deps.cart.getCartFromLocalStorage(),
             lastOrder: null,
         },
+        middleware: (getDefaultMiddleware) =>
+            getDefaultMiddleware({
+                // передаем полученный из родителя объект deps
+                // как дополнительный аргмент для всех thunk
+                thunk: { extraArgument: deps },
+            }).prepend(
+                // подключаем listenerMiddleware к стору redux
+                listenerMiddleware.middleware
+            ),
         devTools: true,
     });
 

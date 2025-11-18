@@ -4,11 +4,17 @@ import { MemoryRouter } from 'react-router';
 import { renderToString } from 'react-dom/server';
 
 import { Application } from '@/application';
-import { initStore } from '@/store';
+import { initStore, type Deps } from '@/store';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { CartApi } from '@/api';
 
 export function render(url: string) {
-    const store = initStore();
+    const deps: Deps = {
+        cart: new CartApi(),
+    };
+
+    // при создании стора передаем в него зависимости
+    const store = initStore(deps);
     const client = new QueryClient();
 
     const html = renderToString(
