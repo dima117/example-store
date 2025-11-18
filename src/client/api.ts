@@ -1,6 +1,7 @@
-import type { CheckoutRequest, CheckoutResponse } from '@common/types';
+import type { CheckoutRequest, CheckoutResponse, ProductShortInfo } from '@common/types';
 import type { CartState } from './types';
 import axios from 'axios';
+import { createContext, useContext } from 'react';
 
 /** ключ, в котором хранится состояние корзины в localStorage */
 export const LOCAL_STORAGE_CART_KEY = 'example-store-cart';
@@ -35,6 +36,7 @@ export class CartApi implements ICartApi {
 
 export interface IServerApi {
     checkout(params: CheckoutRequest): Promise<CheckoutResponse>;
+    getProductList(): Promise<ProductShortInfo[]>;
 }
 
 export class ServerApi implements IServerApi {
@@ -42,4 +44,23 @@ export class ServerApi implements IServerApi {
         const response = await axios.post<CheckoutResponse>('/api/checkout', params);
         return response.data;
     }
+    async getProductList() {
+        const response = await axios.get<ProductShortInfo[]>('/api/products');
+
+        return response.data;
+    }
 }
+
+const ApiContext = createContext<IServerApi | null>(null);
+
+export const ApiProvider = ApiContext.Provider;
+
+export const useApi = () => {
+    const api = useContext(ApiContext);
+
+    if (api === null) {
+        throw new Error('API is not defined');
+    }
+
+    return api;
+};

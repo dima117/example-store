@@ -1,20 +1,21 @@
 import type { FC } from 'react';
 
-import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 
-import type { ProductShortInfo } from '@common/types';
 import { ProductItem } from '@components/product-item';
 import { PageTitle } from '@/components/page-title';
 import { DocumentTitle } from '@/components/document-title';
+import { useApi } from '@/api';
 
 /** страница каталога со списком товаров */
 export const Catalog: FC = () => {
+    // вместо глобальной переменной axios
+    // используем экземпляр api из контекста
+    const api = useApi();
+
     const { data } = useQuery({
         queryKey: ['products'],
-        queryFn: async () => {
-            return (await axios.get<ProductShortInfo[]>('/api/products')).data;
-        },
+        queryFn: async () => api.getProductList(),
     });
 
     const content = data ? (

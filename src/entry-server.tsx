@@ -6,7 +6,7 @@ import { renderToString } from 'react-dom/server';
 import { Application } from '@/application';
 import { initStore, type Deps } from '@/store';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { CartApi, ServerApi } from '@/api';
+import { ApiProvider, CartApi, ServerApi } from '@/api';
 
 export function render(url: string) {
     const deps: Deps = {
@@ -22,9 +22,11 @@ export function render(url: string) {
         <StrictMode>
             <MemoryRouter initialEntries={[url]}>
                 <Provider store={store}>
-                    <QueryClientProvider client={client}>
-                        <Application />
-                    </QueryClientProvider>
+                    <ApiProvider value={deps.api}>
+                        <QueryClientProvider client={client}>
+                            <Application />
+                        </QueryClientProvider>
+                    </ApiProvider>
                 </Provider>
             </MemoryRouter>
         </StrictMode>

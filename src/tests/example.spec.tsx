@@ -1,10 +1,11 @@
-import { beforeEach, expect, test } from 'vitest';
-import { screen, within } from '@testing-library/react';
+import { beforeEach, expect, test, vi } from 'vitest';
+import { screen, waitForElementToBeRemoved, within } from '@testing-library/react';
 import { CheckoutForm } from '@/components/checkout-form';
 import { debug } from 'vitest-preview';
 import event from '@testing-library/user-event';
 import { Cart } from '@/pages/cart';
 import { createStubDeps, renderComponent } from './utils';
+import { Catalog } from '@/pages/catalog';
 
 beforeEach(() => {
     document.body.innerHTML = '';
@@ -63,7 +64,7 @@ test('если корзина пуста, должна отображаться 
     expect((getByTestId('link-catalog') as HTMLAnchorElement).href).toBe('http://localhost:3000/catalog');
 });
 
-test.only('при нажатии кнопки "Заказать" содержимое корзины и значения полей формы заказа отправляются на сервер и оформляется новый заказ', async () => {
+test('при нажатии кнопки "Заказать" содержимое корзины и значения полей формы заказа отправляются на сервер и оформляется новый заказ', async () => {
     const deps = createStubDeps({
         11: { name: 'тест11', count: 10, price: 230 },
         22: { name: 'тест22', count: 20, price: 1000 },
@@ -74,8 +75,6 @@ test.only('при нажатии кнопки "Заказать" содержи�
     await event.type(getByTestId('input-name'), 'Иван Иванов');
     await event.type(getByTestId('input-phone'), '+79991234567');
     await event.type(getByTestId('input-address'), 'Казань');
-
-    debug();
 
     await event.click(getByTestId('button-submit'));
 
@@ -90,4 +89,25 @@ test.only('при нажатии кнопки "Заказать" содержи�
             { id: 22, count: 20 },
         ],
     });
+});
+
+test.only('в каталоге должны отображаться товары, список которых приходит с сервера', async () => {
+    const deps = createStubDeps();
+
+    deps.api.getProductList = vi.fn().mockResolvedValueOnce([
+        { id: 1, name: 'Item 1', price: 111, description: 'Test product description 1' },
+        { id: 2, name: 'Item 2', price: 222, description: 'Test product description 2' },
+        { id: 3, name: 'Item 3', price: 333, description: 'Test product description 3' },
+    ]);
+
+    const { getByTestId, getAllByTestId } = renderComponent(<Catalog />, deps);
+
+    await waitForElementToBeRemoved(getByTestId('loading'));
+
+    debug();
+    
+    const items = getAllByTestId('product-list-item');
+    const names = items.map((item) => within(item).getByTestId('name').textContent);
+
+    expect(names).toEqual(['Item 1', 'Item 2', 'Item 3']);
 });
