@@ -105,11 +105,11 @@ export const checkout = createAppThunk<CheckoutResponse, CheckoutActionPayload>(
 );
 
 /** создать экземпляр redux store */
-export const initStore = () => {
+export const initStore = (cart: CartState) => {
     const store = configureStore({
         reducer: slice.reducer,
         preloadedState: {
-            cart: getCartFromLocalStorage(),
+            cart,
             lastOrder: null,
         },
         devTools: true,

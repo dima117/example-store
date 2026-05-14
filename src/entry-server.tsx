@@ -8,7 +8,7 @@ import { initStore } from '@/store';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export function render(url: string) {
-    const store = initStore();
+    const store = initStore({});
     const client = new QueryClient();
 
     const html = renderToString(
