@@ -3,7 +3,7 @@ import type { CartState, CheckoutFormData, LastOrder } from '@/types';
 import type { ProductShortInfo, CheckoutRequest, CheckoutResponse } from '@common/types';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { EMPTY_CART, getCartFromLocalStorage, saveCartToLocalStorage } from './utils';
+import { EMPTY_CART, saveCartToLocalStorage } from './utils';
 
 // store typings
 export type Store = ReturnType<typeof initStore>;
@@ -105,7 +105,7 @@ export const checkout = createAppThunk<CheckoutResponse, CheckoutActionPayload>(
 );
 
 /** создать экземпляр redux store */
-export const initStore = (cart: CartState) => {
+export const initStore = (cart: CartState = {}) => {
     const store = configureStore({
         reducer: slice.reducer,
         preloadedState: {

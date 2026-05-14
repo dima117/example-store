@@ -13,7 +13,8 @@ export const Catalog: FC = () => {
     const { data } = useQuery({
         queryKey: ['products'],
         queryFn: async () => {
-            return (await axios.get<ProductShortInfo[]>('/api/products')).data;
+            const response = await axios.get<ProductShortInfo[]>('/api/products');
+            return response.data;
         },
     });
 

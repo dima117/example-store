@@ -15,7 +15,8 @@ export const Product: FC = () => {
     const { data } = useQuery({
         queryKey: ['details', id],
         queryFn: async () => {
-            return (await axios.get<ProductInfo>(`/api/products/${id}`)).data;
+            const response = await axios.get<ProductInfo>(`/api/products/${id}`);
+            return response.data;
         },
     });
 

@@ -22,7 +22,7 @@ export const ProductItem: FC<ProductItemProps> = ({ product }) => {
             <Image className="card-img-top" />
             <div className="card-body">
                 <h5 className="card-title">
-                    <Link to={`/catalog/${product.id}`} data-testid="name">
+                    <Link to={`/catalog/${product.id}`} data-testid="product-list-item-name">
                         {product.name}
                     </Link>
                 </h5>
