@@ -10,7 +10,7 @@ import { DocumentTitle } from '@/components/document-title';
 
 /** страница каталога со списком товаров */
 export const Catalog: FC = () => {
-    const { data } = useQuery({
+    const { data, error } = useQuery({
         queryKey: ['products'],
         queryFn: async () => {
             const response = await axios.get<ProductShortInfo[]>('/api/products');
@@ -18,7 +18,11 @@ export const Catalog: FC = () => {
         },
     });
 
-    const content = data ? (
+    const content = error ? (
+        <div className="alert alert-danger" role="alert" data-testid="error">
+            Failed to load products. Please try again later.
+        </div>
+    ) : data ? (
         data.map((p) => (
             <div key={p.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
                 <ProductItem product={p} />

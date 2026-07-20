@@ -16,7 +16,12 @@ if (!root) {
 
 const cart = getCartFromLocalStorage();
 const store = initStore(cart);
-const client = new QueryClient();
+
+// повторные попытки запросов отключены: молчаливые ретраи маскируют ошибки,
+// а поведение приложения становится непредсказуемым по времени
+const client = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+});
 
 hydrateRoot(
     root,

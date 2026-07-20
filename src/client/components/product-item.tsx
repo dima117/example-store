@@ -31,7 +31,12 @@ export const ProductItem: FC<ProductItemProps> = ({ product }) => {
                         <span className="fs-3">${product.price}</span>
                     </div>
                     <div className="col-auto">
-                        <button type="button" className="btn btn-outline-primary" onClick={onClick}>
+                        <button
+                            type="button"
+                            className="btn btn-outline-primary"
+                            onClick={onClick}
+                            data-testid="button-add-to-cart"
+                        >
                             Add to Cart
                         </button>
                     </div>
