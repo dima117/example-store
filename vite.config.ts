@@ -14,5 +14,8 @@ export default defineConfig({
     },
     test: {
         environment: 'jsdom',
+        // модульные тесты живут в src; ./tests — это e2e-тесты Playwright,
+        // их запускает другой раннер
+        include: ['src/**/*.spec.{ts,tsx}'],
     },
 });

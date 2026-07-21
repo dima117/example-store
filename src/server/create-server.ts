@@ -2,6 +2,7 @@ import express from 'express';
 import { createApiRouter } from './create-api-router';
 import { ExampleDataSource } from './example-data-source';
 import { createViteServer } from './create-vite-server';
+import { demoModesMiddleware } from './demo-modes';
 
 /**
  * Параметры для создания сервера приложения
@@ -33,6 +34,8 @@ export async function createServer({ dataFilePath, templateFilePath }: CreateSer
     app.get('/cart', indexHtml);
 
     // api
+    // демо-режимы для лекции (включаются переменными окружения, действуют только на автотесты)
+    app.use('/api', demoModesMiddleware);
     app.use('/api', createApiRouter(dataSource));
 
     return app;

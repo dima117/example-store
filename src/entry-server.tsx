@@ -6,18 +6,22 @@ import { renderToString } from 'react-dom/server';
 import { Application } from '@/application';
 import { initStore } from '@/store';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ApiProvider, ServerApi } from '@/api';
 
 export function render(url: string) {
-    const store = initStore();
+    const api = new ServerApi();
+    const store = initStore({ api });
     const client = new QueryClient();
 
     const html = renderToString(
         <StrictMode>
             <MemoryRouter initialEntries={[url]}>
                 <Provider store={store}>
-                    <QueryClientProvider client={client}>
-                        <Application />
-                    </QueryClientProvider>
+                    <ApiProvider value={api}>
+                        <QueryClientProvider client={client}>
+                            <Application />
+                        </QueryClientProvider>
+                    </ApiProvider>
                 </Provider>
             </MemoryRouter>
         </StrictMode>

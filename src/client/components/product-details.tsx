@@ -22,7 +22,9 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
             </div>
             <div className="col-12 col-sm-7 col-lg-6">
                 <p>{product.description}</p>
-                <p className="fs-3">${product.price}</p>
+                <p className="fs-3" data-testid="product-price">
+                    ${product.price}
+                </p>
                 <p>
                     <button className="btn btn-primary btn-lg" onClick={onClick}>
                         Add to Cart
