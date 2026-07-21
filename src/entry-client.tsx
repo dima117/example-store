@@ -7,6 +7,7 @@ import { BrowserRouter } from 'react-router';
 import { initStore } from '@/store';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { getCartFromLocalStorage } from '@/utils';
+import { ApiProvider, ServerApi } from '@/api';
 
 const root = document.getElementById('root');
 
@@ -23,14 +24,19 @@ const client = new QueryClient({
     defaultOptions: { queries: { retry: false } },
 });
 
+// реальная реализация api создаётся в корне приложения
+const api = new ServerApi();
+
 hydrateRoot(
     root,
     <StrictMode>
         <BrowserRouter>
             <Provider store={store}>
-                <QueryClientProvider client={client}>
-                    <Application />
-                </QueryClientProvider>
+                <ApiProvider value={api}>
+                    <QueryClientProvider client={client}>
+                        <Application />
+                    </QueryClientProvider>
+                </ApiProvider>
             </Provider>
         </BrowserRouter>
     </StrictMode>
