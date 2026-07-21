@@ -19,6 +19,8 @@ test('страница подтверждения заказа выглядит 
     await page.getByTestId('button-submit').click();
     await expect(page.getByTestId('order-info')).toBeVisible();
 
-    // в кадре — блок подтверждения с датой и номером заказа
-    await expect(page).toHaveScreenshot('order-confirmation.png');
+    // нестабильный блок (дата и номер заказа) закрашивается прямо в эталоне
+    await expect(page).toHaveScreenshot('order-confirmation.png', {
+        mask: [page.getByTestId('order-info')],
+    });
 });
