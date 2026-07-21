@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router';
+import { MemoryRouter } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { vi } from 'vitest';
 
@@ -19,19 +19,25 @@ export function createStubApi() {
 }
 
 /** рендер тестируемого блока со всеми внешними зависимостями приложения */
-export function renderComponent(children: ReactNode, api: IServerApi = createStubApi(), cart: CartState = {}) {
+export function renderComponent(
+    children: ReactNode,
+    api: IServerApi = createStubApi(),
+    cart: CartState = {},
+    url: string = '/'
+) {
     const store = initStore({ api }, cart);
     const client = new QueryClient({
         defaultOptions: { queries: { retry: false } },
     });
 
     return render(
-        <BrowserRouter>
+        // MemoryRouter: текущий url — это ВХОД роутера, задаём его из теста
+        <MemoryRouter initialEntries={[url]}>
             <Provider store={store}>
                 <ApiProvider value={api}>
                     <QueryClientProvider client={client}>{children}</QueryClientProvider>
                 </ApiProvider>
             </Provider>
-        </BrowserRouter>
+        </MemoryRouter>
     );
 }
