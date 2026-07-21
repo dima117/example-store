@@ -1,12 +1,13 @@
 import { createContext, useContext } from 'react';
 import axios from 'axios';
 
-import type { Product, ProductShortInfo } from '@common/types';
+import type { CheckoutRequest, CheckoutResponse, Product, ProductShortInfo } from '@common/types';
 
 /** интерфейс серверного API приложения */
 export interface IServerApi {
     getProductList(): Promise<ProductShortInfo[]>;
     getProductDetails(id: unknown): Promise<Product>;
+    checkout(params: CheckoutRequest): Promise<CheckoutResponse>;
 }
 
 /** реализация серверного API поверх axios */
@@ -18,6 +19,11 @@ export class ServerApi implements IServerApi {
 
     async getProductDetails(id: unknown) {
         const response = await axios.get<Product>(`/api/products/${id}`);
+        return response.data;
+    }
+
+    async checkout(params: CheckoutRequest) {
+        const response = await axios.post<CheckoutResponse>('/api/checkout', params);
         return response.data;
     }
 }

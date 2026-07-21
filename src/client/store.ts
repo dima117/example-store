@@ -2,8 +2,13 @@ import { configureStore, createSlice, createAsyncThunk, type PayloadAction } fro
 import type { CartState, CheckoutFormData, LastOrder } from '@/types';
 import type { ProductShortInfo, CheckoutRequest, CheckoutResponse } from '@common/types';
 import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
 import { EMPTY_CART, saveCartToLocalStorage } from './utils';
+import type { IServerApi } from '@/api';
+
+/** внешние зависимости стора: доступны всем thunk через extra */
+export interface Deps {
+    api: IServerApi;
+}
 
 // store typings
 export type Store = ReturnType<typeof initStore>;
@@ -19,6 +24,7 @@ export const useAppSelector = useSelector.withTypes<RootState>();
 /** типизированный createAsyncThunk */
 const createAppThunk = createAsyncThunk.withTypes<{
     state: RootState;
+    extra: Deps;
 }>();
 
 // state
@@ -82,7 +88,7 @@ interface CheckoutActionPayload {
 /** redux action: оформление заказа  */
 export const checkout = createAppThunk<CheckoutResponse, CheckoutActionPayload>(
     'example/checkout',
-    async (action) => {
+    async (action, { extra }) => {
         const { form, cart } = action;
 
         const items = Object.entries(cart).map(([id, item]) => ({
@@ -99,19 +105,24 @@ export const checkout = createAppThunk<CheckoutResponse, CheckoutActionPayload>(
             },
         };
 
-        const response = await axios.post<CheckoutResponse>('/api/checkout', checkoutData);
-        return response.data;
+        // зависимость приходит через extra — тот же api, что и у компонентов
+        return await extra.api.checkout(checkoutData);
     }
 );
 
 /** создать экземпляр redux store */
-export const initStore = (cart: CartState = {}) => {
+export const initStore = (deps: Deps, cart: CartState = {}) => {
     const store = configureStore({
         reducer: slice.reducer,
         preloadedState: {
             cart,
             lastOrder: null,
         },
+        middleware: (getDefaultMiddleware) =>
+            getDefaultMiddleware({
+                // передаём зависимости всем thunk как extra
+                thunk: { extraArgument: deps },
+            }),
         devTools: true,
     });
 

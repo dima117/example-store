@@ -9,9 +9,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ApiProvider, ServerApi } from '@/api';
 
 export function render(url: string) {
-    const store = initStore();
-    const client = new QueryClient();
     const api = new ServerApi();
+    const store = initStore({ api });
+    const client = new QueryClient();
 
     const html = renderToString(
         <StrictMode>

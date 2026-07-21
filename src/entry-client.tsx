@@ -15,17 +15,17 @@ if (!root) {
     throw new Error('root element was not found');
 }
 
+// реальная реализация api создаётся в корне приложения
+const api = new ServerApi();
+
 const cart = getCartFromLocalStorage();
-const store = initStore(cart);
+const store = initStore({ api }, cart);
 
 // повторные попытки запросов отключены: молчаливые ретраи маскируют ошибки,
 // а поведение приложения становится непредсказуемым по времени
 const client = new QueryClient({
     defaultOptions: { queries: { retry: false } },
 });
-
-// реальная реализация api создаётся в корне приложения
-const api = new ServerApi();
 
 hydrateRoot(
     root,

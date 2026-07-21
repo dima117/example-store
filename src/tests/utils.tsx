@@ -14,12 +14,13 @@ export function createStubApi() {
     return {
         getProductList: vi.fn<IServerApi['getProductList']>().mockResolvedValue([]),
         getProductDetails: vi.fn<IServerApi['getProductDetails']>(),
+        checkout: vi.fn<IServerApi['checkout']>(),
     } satisfies IServerApi;
 }
 
 /** рендер тестируемого блока со всеми внешними зависимостями приложения */
 export function renderComponent(children: ReactNode, api: IServerApi = createStubApi(), cart: CartState = {}) {
-    const store = initStore(cart);
+    const store = initStore({ api }, cart);
     const client = new QueryClient({
         defaultOptions: { queries: { retry: false } },
     });
