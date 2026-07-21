@@ -21,11 +21,14 @@ test('название товара является ссылкой на стр�
     });
 
     // тестируемый блок — ВСЁ приложение; стартовый url задаём как вход
-    const { getByTestId } = renderComponent(<Application />, api, {}, '/catalog');
+    const { getByTestId, history } = renderComponent(<Application />, api, {}, '/catalog');
 
     await waitForElementToBeRemoved(getByTestId('loading'));
 
     await userEvent.click(getByTestId('product-list-item-name'));
 
     await waitFor(() => expect(getByTestId('page-title').textContent).toBe('Товар один'));
+
+    // а текущий url — проверяемый ВЫХОД роутера
+    expect(history.location.pathname).toBe('/catalog/1');
 });

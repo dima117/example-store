@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router';
+import { unstable_HistoryRouter as HistoryRouter } from 'react-router';
+import { createMemoryHistory } from 'history';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { vi } from 'vitest';
 
@@ -30,14 +31,21 @@ export function renderComponent(
         defaultOptions: { queries: { retry: false } },
     });
 
-    return render(
-        // MemoryRouter: текущий url — это ВХОД роутера, задаём его из теста
-        <MemoryRouter initialEntries={[url]}>
+    // состояние роутера вынесено в memoryHistory: url — и ВХОД (initialEntries),
+    // и доступный тесту ВЫХОД (history.location)
+    const history = createMemoryHistory({ initialEntries: [url] });
+
+    const result = render(
+        // @ts-expect-error разница типов history и react-router
+        // https://github.com/remix-run/react-router/issues/9422#issuecomment-1301182219
+        <HistoryRouter history={history}>
             <Provider store={store}>
                 <ApiProvider value={api}>
                     <QueryClientProvider client={client}>{children}</QueryClientProvider>
                 </ApiProvider>
             </Provider>
-        </MemoryRouter>
+        </HistoryRouter>
     );
+
+    return { ...result, history };
 }
