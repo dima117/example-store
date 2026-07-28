@@ -10,3 +10,13 @@ jobs:
             - uses: actions/checkout@v4
             - run: npm ci
             - run: npm test
+
+            - name: Notify
+              if: always()
+              env:
+                  TG_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+                  TG_CHAT: ${{ secrets.TG_CHAT_ID }}
+              run: |
+                  curl -s "https://api.telegram.org/bot$TG_TOKEN/sendMessage" \
+                    -d chat_id="$TG_CHAT" \
+                    -d text="${{ github.repository }} — тесты: ${{ job.status }}"
